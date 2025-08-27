@@ -1,3 +1,3 @@
 ALTER TABLE
 posts
-DROP CONSTRAINTS fk_user;
+DROP CONSTRAINT fk_user;

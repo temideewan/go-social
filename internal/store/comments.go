@@ -19,6 +19,8 @@ type CommentStore struct {
 }
 
 func (s *CommentStore) GetByPostId(ctx context.Context, postID int64) ([]Comment, error) {
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
 	query := `
 	SELECT 
 	c.id, 

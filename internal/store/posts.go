@@ -76,3 +76,66 @@ func (s *PostStore) GetById(ctx context.Context, id int64) (*Post, error) {
 	}
 	return &post, nil
 }
+
+func (s *PostStore) GetAllPosts(ctx context.Context) ([]Post, error) {
+	query := `
+	SELECT p.id,p.title,p.content,p.created_at,p.updated_at,p.user_id, p.tags FROM posts p
+	ORDER BY p.id
+	`
+	rows, err := s.db.QueryContext(ctx, query)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrNotFound
+		default:
+			return nil, err
+		}
+	}
+	posts := []Post{}
+
+	for rows.Next() {
+		post := Post{}
+
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt, &post.UserID, pq.Array(&post.Tags))
+
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func (s *PostStore) DeleteById(ctx context.Context, id int64) error {
+	query := `
+	DELETE FROM posts WHERE id=$1
+	`
+	res, err := s.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+func (s *PostStore) UpdatePost(ctx context.Context, post *Post) error {
+	query := `
+	UPDATE posts 
+	SET title=$1, content=$2 
+	WHERE id=$3
+	RETURNING id, user_id, created_at, updated_at, tags
+	`
+	err := s.db.QueryRowContext(ctx, query, post.Title, post.Content, post.ID).Scan(&post.ID, &post.UserID, &post.CreatedAt, &post.UpdatedAt, pq.Array(&post.Tags))
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -26,8 +26,8 @@ func (s *UserStore) Create(ctx context.Context, user *User) error {
 		`
 	err := s.db.QueryRowContext(ctx, query,
 		user.Username,
-		user.Email,
 		user.Password,
+		user.Email,
 	).Scan(
 		&user.ID,
 		&user.CreatedAt,

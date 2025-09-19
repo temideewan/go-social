@@ -37,8 +37,18 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 
 	ctx := r.Context()
 	if err := app.store.Followers.Follow(ctx, followedUser.ID, payload.UserID); err != nil {
-		app.internalServerError(w, r, err)
-		return
+		switch err {
+		case store.ErrNotFound:
+			app.notFoundResponse(w, r, err)
+			return
+		case store.ErrConflict:
+			app.conflictResponse(w, r, err)
+			return
+		default:
+			app.internalServerError(w, r, err)
+			return
+
+		}
 	}
 
 	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
@@ -57,8 +67,15 @@ func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Reque
 
 	ctx := r.Context()
 	if err := app.store.Followers.Unfollow(ctx, followedUser.ID, payload.UserID); err != nil {
-		app.internalServerError(w, r, err)
-		return
+		switch err {
+		case store.ErrNotFound:
+			app.notFoundResponse(w, r, err)
+			return
+		default:
+			app.internalServerError(w, r, err)
+			return
+
+		}
 	}
 	if err := app.jsonResponse(w, http.StatusNoContent, nil); err != nil {
 		app.internalServerError(w, r, err)

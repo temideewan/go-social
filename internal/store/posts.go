@@ -156,3 +156,7 @@ func (s *PostStore) UpdatePost(ctx context.Context, post *Post) error {
 	}
 	return nil
 }
+
+func (s *PostStore) GetUserFeed(ctx context.Context, id int64) ([]*Post, error) {
+	return nil, nil
+}

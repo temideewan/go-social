@@ -9,6 +9,7 @@ import (
 
 var (
 	ErrNotFound          = errors.New("resource not found")
+	ErrConflict          = errors.New("resource already exists")
 	QueryTimeoutDuration = time.Second * 5
 )
 
@@ -19,6 +20,7 @@ type Storage struct {
 		DeleteById(context.Context, int64) error
 		GetAllPosts(context.Context) ([]Post, error)
 		UpdatePost(context.Context, *Post) error
+		GetUserFeed(context.Context, int64) ([]*Post, error)
 	}
 	Users interface {
 		Create(context.Context, *User) error

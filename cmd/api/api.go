@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -80,7 +81,7 @@ func (app *application) mount() http.Handler {
 func (app *application) run(mux http.Handler) error {
 	// Docs
 	docs.SwaggerInfo.Version = version
-	docs.SwaggerInfo.Host = app.config.apiUrl
+	docs.SwaggerInfo.Host = fmt.Sprintf("%s/", strings.TrimPrefix(app.config.apiUrl, "http://"))
 	docs.SwaggerInfo.BasePath = "v1"
 	srv := &http.Server{
 		Addr:         app.config.addr,

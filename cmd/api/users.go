@@ -13,6 +13,20 @@ type userKey string
 
 const userCtx userKey = "users"
 
+// GetUser godoc
+//
+//	@Summary		Fetches a user profile
+//	@Description	Fetch a user profile by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"User ID"
+//	@Success		200	{object}	store.User
+//	@Failure		400	{object}	error
+//	@Failure		404	{object}	error
+//	@Failure		500	{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/{id} [get]
 func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := getUserFromContext(r)
 	if err := app.jsonResponse(w, http.StatusOK, user); err != nil {
@@ -25,6 +39,20 @@ type FollowerUser struct {
 	UserID int64 `json:"user_id"`
 }
 
+// FollowUser godoc
+//
+//	@Summary		Follow a user profile
+//	@Description	Follow a user profile by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int		true	"User ID"
+//	@Success		204	{object}	string	"User followed"
+//	@Failure		400	{object}	error
+//	@Failure		404	{object}	error	"User not found"
+//	@Failure		500	{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/{id}/follow [put]
 func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
 	followedUser := getUserFromContext(r)
 

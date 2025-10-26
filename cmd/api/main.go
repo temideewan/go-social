@@ -29,7 +29,7 @@ const version = "0.0.1"
 //	@securityDefinitions.apikey	APiKeyAuth
 //	@in							header
 //	@name						Authorization
-//	@description
+//	@description				The api assigns a eky when you sign up. You need to pass it in the "Authorization" header for endpoints that require authentication.
 
 func main() {
 	errorLog := log.New(os.Stderr, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile)

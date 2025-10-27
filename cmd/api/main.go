@@ -1,12 +1,10 @@
 package main
 
 import (
-	"log"
-	"os"
-
 	"github.com/temideewan/go-social/internal/db"
 	"github.com/temideewan/go-social/internal/env"
 	"github.com/temideewan/go-social/internal/store"
+	"go.uber.org/zap"
 
 	_ "github.com/temideewan/go-social/docs"
 )
@@ -32,8 +30,6 @@ const version = "0.0.1"
 //	@description				The api assigns a eky when you sign up. You need to pass it in the "Authorization" header for endpoints that require authentication.
 
 func main() {
-	errorLog := log.New(os.Stderr, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile)
-	infoLog := log.New(os.Stdout, "INFO:\t", log.Ldate|log.Ltime)
 	cfg := config{
 		addr:   env.GetString("ADDR", ":8080"),
 		env:    env.GetString("ENV", "development"),
@@ -45,7 +41,10 @@ func main() {
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 		},
 	}
-
+	// logger
+	logger := zap.Must(zap.NewProduction()).Sugar()
+	defer logger.Sync()
+	// database
 	db, err := db.New(
 		cfg.db.addr,
 		cfg.db.maxOpenConns,
@@ -54,21 +53,20 @@ func main() {
 	)
 
 	if err != nil {
-		errorLog.Panic(err)
+		logger.Fatal(err)
 	}
 
 	defer db.Close()
-	infoLog.Println("Database connection pool established")
+	logger.Info("Database connection pool established")
 
 	store := store.NewStorage(db)
 
 	app := &application{
-		config:   cfg,
-		store:    store,
-		errorLog: errorLog,
-		infoLog:  infoLog,
+		config: cfg,
+		store:  store,
+		logger: logger,
 	}
 
 	mux := app.mount()
-	errorLog.Fatal(app.run(mux))
+	logger.Fatal(app.run(mux))
 }

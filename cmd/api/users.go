@@ -84,6 +84,21 @@ func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
+// FollowUser godoc
+//
+//	@Summary		Unfollow a user profile
+//	@Description	Unfollow a user profile by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int		true	"User ID"
+//	@Success		204	{object}	string	"User unfollowed"
+//	@Failure		400	{object}	error
+//	@Failure		404	{object}	error	"User not found"
+//	@Failure		500	{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/users/{id}/unfollow [put]
 func (app *application) unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
 	followedUser := getUserFromContext(r)
 	// TODO: revert to auth userID from ctx

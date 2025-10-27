@@ -25,6 +25,18 @@ type UpdatePostPayload struct {
 	Content *string `json:"content" validate:"omitempty,max=1000"`
 }
 
+// CreatePost godoc
+//
+//	@Summary		Creates a post
+//	@Description	Creates a new post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Success		201	{object}	store.Post
+//	@Failure		400	{object}	error
+//	@Failure		500	{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts [post]
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Create Post Handler")
 	var payload CreatePostPayload
@@ -59,6 +71,20 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 
 }
 
+// CreatePost godoc
+//
+//	@Summary		Get a post
+//	@Description	Get a post by id
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postId	path		int	true	"Post ID"
+//	@Success		201		{object}	store.Post
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error	"Post not found"
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postId} [get]
 func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 	comments, err := app.store.Comments.GetByPostId(r.Context(), post.ID)
@@ -106,6 +132,21 @@ func (app *application) getAllPostHandler(w http.ResponseWriter, r *http.Request
 		app.internalServerError(w, r, err)
 	}
 }
+
+// UpdatePost godoc
+//
+//	@Summary		Update a post
+//	@Description	Updates an existing post
+//	@Tags			posts
+//	@Accept			json
+//	@Produce		json
+//	@Param			postId	path		int	true	"Post ID"``
+//	@Success		201		{object}	store.Post
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error	"Post not found"
+//	@Failure		500		{object}	error
+//	@Security		ApiKeyAuth
+//	@Router			/posts/{postId} [put]
 func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post := getPostFromCtx(r)
 	var payload UpdatePostPayload

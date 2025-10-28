@@ -15,25 +15,26 @@ var (
 
 type Storage struct {
 	Posts interface {
-		Create(context.Context, *Post) error
-		GetById(context.Context, int64) (*Post, error)
-		DeleteById(context.Context, int64) error
-		GetAllPosts(context.Context) ([]Post, error)
-		UpdatePost(context.Context, *Post) error
-		GetUserFeed(context.Context, int64, PaginatedFeedQuery) ([]PostWithMetadata, error)
+		Create(ctx context.Context, post *Post) error
+		GetById(ctx context.Context, id int64) (*Post, error)
+		DeleteById(ctx context.Context, id int64) error
+		GetAllPosts(ctx context.Context) ([]Post, error)
+		UpdatePost(ctx context.Context, post *Post) error
+		GetUserFeed(ctx context.Context, userId int64, query PaginatedFeedQuery) ([]PostWithMetadata, error)
 	}
 	Users interface {
-		Create(context.Context, *User) error
-		GetById(context.Context, int64) (*User, error)
+		Create(ctx context.Context, user *User) error
+		GetById(ctx context.Context, id int64) (*User, error)
+		CreateAndInvite(ctx context.Context, user *User, token string) error
 	}
 	Comments interface {
-		GetByPostId(context.Context, int64) ([]Comment, error)
-		Create(context.Context, *Comment) error
+		GetByPostId(ctx context.Context, id int64) ([]Comment, error)
+		Create(ctx context.Context, comment *Comment) error
 	}
 
 	Followers interface {
-		Follow(context.Context, int64, int64) error
-		Unfollow(context.Context, int64, int64) error
+		Follow(ctx context.Context, followerId int64, followeeId int64) error
+		Unfollow(ctx context.Context, followerId int64, followeeId int64) error
 	}
 }
 

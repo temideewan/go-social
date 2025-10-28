@@ -1,0 +1,2 @@
+ALTER TABLE USERS
+DROP is_active;

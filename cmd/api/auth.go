@@ -25,7 +25,7 @@ type RegisterUserPayload struct {
 //	@Failure		404		{object}	error	"User not found"
 //	@Failure		500		{object}	error
 //	@Security		ApiKeyAuth
-//	@Router			/users/{id}/unfollow [put]
+//	@Router			/users/{id}/unfollow [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var payload RegisterUserPayload
 	if err := readJSON(w, r, payload); err != nil {
@@ -50,7 +50,21 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// store user
-	err := app.store.Users.CreateAndInvite(r.Context(), &user)
+	err := app.store.Users.CreateAndInvite(r.Context(), user, "uuidv4", app.config.mail.exp)
+
+	if err != nil {
+		switch err {
+		case store.ErrDuplicateEmail:
+			app.badRequestResponse(w, r, err)
+		case store.ErrDuplicateUserName:
+			app.badRequestResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
+
+	// send the mail
 
 	if err := app.jsonResponse(w, http.StatusCreated, nil); err != nil {
 		app.internalServerError(w, r, err)

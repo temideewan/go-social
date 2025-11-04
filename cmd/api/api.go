@@ -26,8 +26,12 @@ type config struct {
 	db     dbConfig
 	env    string
 	apiUrl string
+	mail   mailConfig
 }
 
+type mailConfig struct {
+	exp time.Duration
+}
 type dbConfig struct {
 	addr         string
 	maxOpenConns int

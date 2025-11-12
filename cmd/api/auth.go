@@ -28,8 +28,9 @@ type RegisterUserPayload struct {
 //	@Failure		404		{object}	error	"User not found"
 //	@Failure		500		{object}	error
 //	@Security		ApiKeyAuth
-//	@Router			/users/{id}/unfollow [post]
+//	@Router			/authentication/user [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
+	app.logger.Info("registerUserHandler called")
 	var payload RegisterUserPayload
 	if err := readJSON(w, r, &payload); err != nil {
 		app.badRequestResponse(w, r, err)

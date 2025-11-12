@@ -111,6 +111,39 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Td Gopher social
 paths:
+  /authentication/user:
+    post:
+      consumes:
+      - application/json
+      description: Registers a user
+      parameters:
+      - description: User credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/main.RegisterUserPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered
+          schema:
+            $ref: '#/definitions/store.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: User not found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Registers a user
+      tags:
+      - authentication
   /feed:
     get:
       consumes:
@@ -327,38 +360,6 @@ paths:
       tags:
       - users
   /users/{id}/unfollow:
-    post:
-      consumes:
-      - application/json
-      description: Registers a user
-      parameters:
-      - description: User credentials
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/main.RegisterUserPayload'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: User registered
-          schema:
-            $ref: '#/definitions/store.User'
-        "400":
-          description: Bad Request
-          schema: {}
-        "404":
-          description: User not found
-          schema: {}
-        "500":
-          description: Internal Server Error
-          schema: {}
-      security:
-      - ApiKeyAuth: []
-      summary: Registers a user
-      tags:
-      - authentication
     put:
       consumes:
       - application/json
@@ -388,6 +389,36 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Unfollow a user profile
+      tags:
+      - users
+  /users/activate/{token}:
+    put:
+      description: Activates/Register a user by invitation token
+      parameters:
+      - description: Invitation token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: User activated
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Activates/Register a user
       tags:
       - users
 securityDefinitions:

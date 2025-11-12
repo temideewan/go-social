@@ -126,3 +126,7 @@ func (s *UserStore) createUserInvitation(ctx context.Context, tx *sql.Tx, token 
 	}
 	return nil
 }
+
+func (s *UserStore) Activate(ctx context.Context, token string) error {
+	return nil
+}

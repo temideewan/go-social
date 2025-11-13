@@ -57,7 +57,7 @@ const docTemplate = `{
                     "201": {
                         "description": "User registered",
                         "schema": {
-                            "$ref": "#/definitions/store.User"
+                            "$ref": "#/definitions/main.UserWithToken"
                         }
                     },
                     "400": {
@@ -527,6 +527,29 @@ const docTemplate = `{
                 }
             }
         },
+        "main.UserWithToken": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "store.Comment": {
             "type": "object",
             "properties": {
@@ -646,6 +669,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean"
                 },
                 "username": {
                     "type": "string"

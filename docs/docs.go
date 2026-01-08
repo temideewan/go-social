@@ -681,7 +681,7 @@ const docTemplate = `{
     },
     "securityDefinitions": {
         "APiKeyAuth": {
-            "description": "The api assigns a eky when you sign up. You need to pass it in the \"Authorization\" header for endpoints that require authentication.",
+            "description": "The api assigns a key when you sign up. You need to pass it in the \"Authorization\" header for endpoints that require authentication.",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

@@ -35,7 +35,6 @@ type UserWithToken struct {
 //	@Security		ApiKeyAuth
 //	@Router			/authentication/user [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
-	app.logger.Info("registerUserHandler called")
 	var payload RegisterUserPayload
 	if err := readJSON(w, r, &payload); err != nil {
 		app.badRequestResponse(w, r, err)
